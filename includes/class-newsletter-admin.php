@@ -72,19 +72,24 @@ class Epicurisme_Newsletter_Admin {
 
     $mailer = new Epicurisme_Newsletter_Mailer();
 
-    $html = $mailer->render_template(
+    $sent = $mailer->send_test(
+        $email,
         $newsletter_posts
     );
+
+    $status = $sent
+    ? 'email_sent'
+    : 'email_failed';
 
     wp_safe_redirect(
         add_query_arg(
             'newsletter_status',
-            'success',
+            $status,
             admin_url( 'admin.php?page=epicurisme-newsletter' )
         )
     );
 
-    exit;
+        exit;
     }
 
     public function handle_save_newsletter_settings() {

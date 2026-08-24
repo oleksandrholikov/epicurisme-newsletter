@@ -15,4 +15,20 @@ class Epicurisme_Newsletter_Mailer {
 
         return ob_get_clean();
     }
+
+    public function send_test($email, $newsletter_posts) {
+        $subject = 'Le Club Epicurisme';
+        $html = $this->render_template($newsletter_posts);
+
+        $headers = array (
+            'Content-Type: text/html; charset=UTF-8',
+        );
+
+         return wp_mail(
+            $email,
+            $subject,
+            $html,
+            $headers
+        );
+    }
 }

@@ -39,9 +39,19 @@ $status = isset( $_GET['newsletter_status'] )
         </div>
     <?php endif; ?>
 
-    <?php if ( 'success' === $status ) : ?>
+    <?php if ( 'email_sent' === $status ) : ?>
         <div class="notice notice-success is-dismissible">
-            <p>Test email address validated successfully.</p>
+            <p>
+                Test newsletter sent successfully.
+            </p>
+        </div>
+    <?php endif; ?>
+
+    <?php if ( 'email_failed' === $status ) : ?>
+        <div class="notice notice-error is-dismissible">
+            <p>
+                The test newsletter could not be sent.
+            </p>
         </div>
     <?php endif; ?>
 
