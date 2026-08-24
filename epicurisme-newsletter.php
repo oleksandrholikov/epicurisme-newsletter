@@ -12,7 +12,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-require_once plugin_dir_path( __FILE__ )
+define(
+    'EPICURISME_NEWSLETTER_PATH',
+    plugin_dir_path( __FILE__ )
+);
+
+require_once EPICURISME_NEWSLETTER_PATH
     . 'includes/class-newsletter-admin.php';
 
 new Epicurisme_Newsletter_Admin();
