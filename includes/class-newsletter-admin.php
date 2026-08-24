@@ -15,6 +15,11 @@ class Epicurisme_Newsletter_Admin {
             'admin_post_epicurisme_send_test_newsletter',
             array($this, 'handle_send_test_newsletter')
         );
+
+        add_action(
+            'admin_post_epicurisme_save_newsletter_settings',
+            array( $this, 'handle_save_newsletter_settings' )
+        );
     }
 
     public function register_admin_menu() {
@@ -65,12 +70,11 @@ class Epicurisme_Newsletter_Admin {
 
     $newsletter_posts = $posts_service->get_newsletter_posts( 5 );
 
-   error_log(
-    print_r(
-        $newsletter_posts,
-        true
-    )
-);
+    $mailer = new Epicurisme_Newsletter_Mailer();
+
+    $html = $mailer->render_template(
+        $newsletter_posts
+    );
 
     wp_safe_redirect(
         add_query_arg(
@@ -81,5 +85,71 @@ class Epicurisme_Newsletter_Admin {
     );
 
     exit;
-}
+    }
+
+    public function handle_save_newsletter_settings() {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'You are not allowed to perform this action.' );
+        }
+
+        check_admin_referer(
+            'epicurisme_save_newsletter_settings',
+            'epicurisme_newsletter_settings_nonce'
+        );
+
+        $title = isset( $_POST['newsletter_title'] )
+            ? sanitize_text_field(
+                wp_unslash( $_POST['newsletter_title'] )
+            )
+            : '';
+
+        $subtitle = isset( $_POST['newsletter_subtitle'] )
+            ? sanitize_text_field(
+                wp_unslash( $_POST['newsletter_subtitle'] )
+            )
+            : '';
+
+        $intro_text = isset( $_POST['newsletter_intro_text'] )
+            ? sanitize_textarea_field(
+                wp_unslash( $_POST['newsletter_intro_text'] )
+            )
+            : '';
+
+        $instagram_url = isset( $_POST['newsletter_instagram_url'] )
+            ? esc_url_raw(
+                wp_unslash( $_POST['newsletter_instagram_url'] )
+            )
+            : '';
+
+        update_option(
+            'epicurisme_newsletter_title',
+            $title
+        );
+
+        update_option(
+            'epicurisme_newsletter_subtitle',
+            $subtitle
+        );
+
+        update_option(
+            'epicurisme_newsletter_intro_text',
+            $intro_text
+        );
+
+        update_option(
+            'epicurisme_newsletter_instagram_url',
+            $instagram_url
+        );
+
+        wp_safe_redirect(
+            add_query_arg(
+                'newsletter_status',
+                'settings_saved',
+                admin_url( 'admin.php?page=epicurisme-newsletter' )
+            )
+        );
+
+        exit;
+    }
 }

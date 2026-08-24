@@ -23,9 +23,12 @@ define(
 );
 
 require_once EPICURISME_NEWSLETTER_PATH
-    . 'includes/class-newsletter-admin.php';
-    
-require_once EPICURISME_NEWSLETTER_PATH
     . 'includes/class-newsletter-posts.php';
+
+require_once EPICURISME_NEWSLETTER_PATH
+    . 'includes/class-newsletter-mailer.php';
+
+require_once EPICURISME_NEWSLETTER_PATH
+    . 'includes/class-newsletter-admin.php';
 
 new Epicurisme_Newsletter_Admin();
