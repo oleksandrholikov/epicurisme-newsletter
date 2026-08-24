@@ -61,6 +61,17 @@ class Epicurisme_Newsletter_Admin {
         exit;
     }
 
+    $posts_service = new Epicurisme_Newsletter_Posts();
+
+    $newsletter_posts = $posts_service->get_newsletter_posts( 5 );
+
+   error_log(
+    print_r(
+        $newsletter_posts,
+        true
+    )
+);
+
     wp_safe_redirect(
         add_query_arg(
             'newsletter_status',

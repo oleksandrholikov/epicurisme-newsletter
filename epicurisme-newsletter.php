@@ -17,7 +17,15 @@ define(
     plugin_dir_path( __FILE__ )
 );
 
+define(
+    'EPICURISME_NEWSLETTER_URL',
+    plugin_dir_url( __FILE__ )
+);
+
 require_once EPICURISME_NEWSLETTER_PATH
     . 'includes/class-newsletter-admin.php';
+    
+require_once EPICURISME_NEWSLETTER_PATH
+    . 'includes/class-newsletter-posts.php';
 
 new Epicurisme_Newsletter_Admin();
