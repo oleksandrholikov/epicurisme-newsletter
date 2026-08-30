@@ -216,12 +216,20 @@ class Epicurisme_Newsletter_Admin {
             );
         }
 
-        // Додати тут
+        $send = $mailchimp->send_campaign( $campaign_id );
+
+        if ( is_wp_error( $send ) ) {
+            wp_die(
+                esc_html(
+                    $send->get_error_message()
+                )
+            );
+        }
 
         wp_safe_redirect(
             add_query_arg(
                 array(
-                    'newsletter_status' => 'campaign_created',
+                    'newsletter_status' => 'campaign_sent',
                     'campaign_id'       => sanitize_text_field( $campaign_id ),
                 ),
                 admin_url( 'admin.php?page=epicurisme-newsletter' )

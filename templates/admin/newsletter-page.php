@@ -70,11 +70,10 @@ $status = isset( $_GET['newsletter_status'] )
         </div>
     <?php endif; ?>
 
-    <?php if ( 'campaign_created' === $status ) : ?>
+    <?php if ( 'campaign_sent' === $status ) : ?>
         <div class="notice notice-success is-dismissible">
             <p>
-                Mailchimp campaign draft created successfully.
-                Nothing has been sent.
+                Newsletter sent successfully via Mailchimp.
             </p>
         </div>
     <?php endif; ?>
@@ -246,7 +245,7 @@ $status = isset( $_GET['newsletter_status'] )
             'submit',
             false,
             array(
-            'onclick' => "return confirm('Create this Mailchimp campaign draft?');",
+            'onclick' => "return confirm('Envoyer cette newsletter à tous les abonnés Mailchimp ?');",
         )
         );
         ?>
