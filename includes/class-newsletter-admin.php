@@ -17,6 +17,11 @@ class Epicurisme_Newsletter_Admin {
         );
 
         add_action(
+            'admin_post_epicurisme_send_newsletter',
+            array( $this, 'handle_send_newsletter' )
+        );
+
+        add_action(
             'admin_post_epicurisme_save_newsletter_settings',
             array( $this, 'handle_save_newsletter_settings' )
         );
@@ -151,6 +156,74 @@ class Epicurisme_Newsletter_Admin {
             add_query_arg(
                 'newsletter_status',
                 'settings_saved',
+                admin_url( 'admin.php?page=epicurisme-newsletter' )
+            )
+        );
+
+        exit;
+    }
+
+    public function handle_send_newsletter() {
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'You are not allowed to perform this action.' );
+        }
+
+        check_admin_referer(
+            'epicurisme_send_newsletter',
+            'epicurisme_send_newsletter_nonce'
+        );
+
+        $posts_service = new Epicurisme_Newsletter_Posts();
+
+        $newsletter_posts = $posts_service->get_newsletter_posts( 5 );
+
+        $mailer = new Epicurisme_Newsletter_Mailer();
+
+        $html = $mailer->render_template( $newsletter_posts );
+
+        $mailchimp = new Epicurisme_Mailchimp_Service();
+
+        $campaign = $mailchimp->create_campaign(
+            'Epicurisme Mag — Les derniers articles',
+            'Découvrez les dernières actualités Epicurisme Mag.'
+        );
+
+        if ( is_wp_error( $campaign ) ) {
+            wp_die(
+                esc_html(
+                    $campaign->get_error_message()
+                )
+            );
+        }
+
+        $campaign_id = $campaign['id'] ?? '';
+
+        if ( empty( $campaign_id ) ) {
+            wp_die( 'Mailchimp campaign ID is missing.' );
+        }
+
+        $content = $mailchimp->set_campaign_content(
+            $campaign_id,
+            $html
+        );
+
+        if ( is_wp_error( $content ) ) {
+            wp_die(
+                esc_html(
+                    $content->get_error_message()
+                )
+            );
+        }
+
+        // Додати тут
+
+        wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'newsletter_status' => 'campaign_created',
+                    'campaign_id'       => sanitize_text_field( $campaign_id ),
+                ),
                 admin_url( 'admin.php?page=epicurisme-newsletter' )
             )
         );

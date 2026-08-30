@@ -33,7 +33,7 @@ $status = isset( $_GET['newsletter_status'] )
 <div class="wrap">
     <h1>Epicurisme Newsletter</h1>
 
-    <?php if ( 'settings_saved' === $status ) : ?>
+<?php if ( 'settings_saved' === $status ) : ?>
         <div class="notice notice-success is-dismissible">
             <p>Newsletter settings saved.</p>
         </div>
@@ -58,6 +58,24 @@ $status = isset( $_GET['newsletter_status'] )
     <?php if ( 'invalid_email' === $status ) : ?>
         <div class="notice notice-error is-dismissible">
             <p>Please enter a valid email address.</p>
+        </div>
+    <?php endif; ?>
+
+    <?php if ( 'newsletter_ready' === $status ) : ?>
+        <div class="notice notice-info is-dismissible">
+            <p>
+                Newsletter sending handler is ready.
+                Mailchimp campaign sending is not connected yet.
+            </p>
+        </div>
+    <?php endif; ?>
+
+    <?php if ( 'campaign_created' === $status ) : ?>
+        <div class="notice notice-success is-dismissible">
+            <p>
+                Mailchimp campaign draft created successfully.
+                Nothing has been sent.
+            </p>
         </div>
     <?php endif; ?>
 
@@ -160,6 +178,78 @@ $status = isset( $_GET['newsletter_status'] )
         </table>
 
         <?php submit_button( 'Save settings' ); ?>
+    </form>
+
+        <hr>
+
+    <h2>Send newsletter</h2>
+
+    <p>
+        The newsletter will be sent to subscribers
+        from the Mailchimp audience.
+    </p>
+
+    <table class="form-table">
+        <tr>
+            <th scope="row">
+                Audience
+            </th>
+
+            <td>
+                <strong>Newsletters</strong>
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="row">
+                Articles
+            </th>
+
+            <td>
+                Latest 5 published articles
+            </td>
+        </tr>
+
+        <tr>
+            <th scope="row">
+                From
+            </th>
+
+            <td>
+                Le Club Epicurisme
+                &lt;newsletter@epicurisme-mag.com&gt;
+            </td>
+        </tr>
+    </table>
+
+    <form
+        method="post"
+        action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"
+    >
+        <input
+            type="hidden"
+            name="action"
+            value="epicurisme_send_newsletter"
+        >
+
+        <?php
+        wp_nonce_field(
+            'epicurisme_send_newsletter',
+            'epicurisme_send_newsletter_nonce'
+        );
+        ?>
+
+        <?php
+        submit_button(
+            'Send newsletter',
+            'primary',
+            'submit',
+            false,
+            array(
+            'onclick' => "return confirm('Create this Mailchimp campaign draft?');",
+        )
+        );
+        ?>
     </form>
 
     <hr>
